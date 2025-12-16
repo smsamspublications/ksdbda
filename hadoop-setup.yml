@@ -1,0 +1,53 @@
+name: Hadoop Lab Workflow
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  hadoop-setup:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Java
+      uses: actions/setup-java@v3
+      with:
+        java-version: '8'
+        distribution: 'temurin'
+
+    - name: Download Hadoop
+      run: |
+        wget https://downloads.apache.org/hadoop/common/hadoop-3.3.6/hadoop-3.3.6.tar.gz
+        tar -xzf hadoop-3.3.6.tar.gz
+        mv hadoop-3.3.6 $HOME/hadoop
+
+    - name: Configure Standalone Mode
+      run: |
+        echo "Running Hadoop in standalone mode..."
+        $HOME/hadoop/bin/hadoop version
+
+    - name: Configure Pseudo-Distributed Mode
+      run: |
+        echo "Setting up pseudo-distributed mode..."
+        # Example: edit core-site.xml, hdfs-site.xml, etc.
+        # For demo purposes, just show config files
+        ls $HOME/hadoop/etc/hadoop
+
+    - name: Run Sample Job
+      run: |
+        echo "Running WordCount example..."
+        mkdir input
+        echo "Hello Hadoop" > input/file.txt
+        $HOME/hadoop/bin/hadoop jar $HOME/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-*.jar wordcount input output
+        cat output/*
+
+    - name: Monitoring Info
+      run: |
+        echo "Web UIs available when Hadoop daemons are running:"
+        echo "HDFS NameNode UI: http://localhost:9870"
+        echo "YARN ResourceManager UI: http://localhost:8088"
