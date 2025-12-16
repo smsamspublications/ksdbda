@@ -2,7 +2,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.TreeMap;
-import java.util.Set;
 
 /**
  * Experiment 1: Week 1, 2
